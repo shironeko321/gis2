@@ -12,7 +12,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        return view('dashboard.users.index', ['collection' => User::all()]);
     }
 
     /**
@@ -20,7 +20,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('dashboard.users.create');
     }
 
     /**
@@ -28,7 +28,18 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required'
+        ]);
+
+        if ($data) {
+            User::create($data);
+            return back()->with('msg', 'Success Create New User');
+        }
+
+        return back()->exceptInput('password');
     }
 
     /**
@@ -44,7 +55,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        return view('dashboard.users.edit', ['item' => $user]);
     }
 
     /**
@@ -52,7 +63,22 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $data = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => ''
+        ]);
+
+
+        if ($data) {
+            $data['password'] = $data['password'] == '' ? $user->password : $data['password'];
+            $name = $data['name'];
+
+            $user->update($data);
+            return redirect()->route('user.index')->with('msg', "Success Update User($name)");
+        }
+
+        return back()->exceptInput('password');
     }
 
     /**
@@ -60,6 +86,8 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $user->delete();
+
+        return redirect()->route('user.index')->with('msg', 'Success Create Delete User');
     }
 }
