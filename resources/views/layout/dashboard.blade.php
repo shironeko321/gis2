@@ -14,7 +14,8 @@
   <!-- endinject -->
   <!-- Plugin css for this page -->
   <link rel="stylesheet" href="{{ asset('assets/vendors/font-awesome/css/font-awesome.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
+  <link rel="stylesheet"
+    href="{{ asset('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
   <!-- End plugin css for this page -->
   <!-- inject:css -->
   <!-- endinject -->
@@ -22,6 +23,8 @@
   <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
   <!-- End layout styles -->
   <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}">
+
+  @stack('style')
 </head>
 
 <body>
@@ -31,7 +34,7 @@
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
       <!-- partial:partials/_sidebar.html -->
-      @include('template.dashboard.sidebar', ['active' => 'dashboard'])
+      @include('template.dashboard.sidebar', ['active' => $active])
       <!-- partial -->
       <div class="main-panel">
         <div class="content-wrapper">
@@ -52,7 +55,8 @@
   <!-- endinject -->
   <!-- Plugin js for this page -->
   <script src="{{ asset('assets/vendors/chart.js/chart.umd.js') }}"></script>
-  <script src="{{ asset('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+  <script src="{{ asset('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js') }}">
+  </script>
   <!-- End plugin js for this page -->
   <!-- inject:js -->
   <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
@@ -64,6 +68,8 @@
   <!-- Custom js for this page -->
   <script src="{{ asset('assets/js/dashboard.js') }}"></script>
   <!-- End custom js for this page -->
+
+  @stack('script')
 </body>
 
 </html>

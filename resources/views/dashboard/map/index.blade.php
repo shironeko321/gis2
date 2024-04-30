@@ -1,14 +1,14 @@
-@extends('layout.dashboard', ['active' => 'users'])
+@extends('layout.dashboard', ['active' => 'map'])
 
 @section('content')
   <div class="page-header">
     <h3 class="page-title">
       <span class="page-title-icon bg-gradient-primary text-white me-2">
         <i class="mdi mdi-home"></i>
-      </span> Users
+      </span> Map
     </h3>
 
-    <a href="{{ route('user.create') }}" class="btn btn-primary">
+    <a href="{{ route('map.create') }}" class="btn btn-primary">
       Create a New
       <i class="mdi mdi-plus"></i>
     </a>
@@ -28,8 +28,9 @@
               <thead>
                 <tr>
                   <th> * </th>
-                  <th> Name </th>
-                  <th> Email </th>
+                  <th> name </th>
+                  <th> latitude </th>
+                  <th> longtitude </th>
                   <th> Action </th>
                 </tr>
               </thead>
@@ -40,10 +41,16 @@
                       {{ $loop->iteration }}
                     </th>
                     <td> {{ $item->name }} </td>
-                    <td> {{ $item->email }} </td>
+                    <td> {{ $item->latitude }} </td>
+                    <td> {{ $item->longtitude }} </td>
                     <td>
                       <div class="btn-group">
-                        <a href="{{ route('user.edit', ['user' => $item->id]) }}"
+                        <a href="{{ route('map.edit', ['map' => $item->id]) }}"
+                          class="btn btn-primary">
+                          <i class="mdi mdi-alpha-i"></i>
+                          Show
+                        </a>
+                        <a href="{{ route('map.edit', ['map' => $item->id]) }}"
                           class="btn btn-primary">
                           <i class="mdi mdi-pen"></i>
                           Edit
@@ -68,7 +75,7 @@
                             <div class="modal-body">
                               <p>are you sure delete this item({{ $item->name }})?</p>
                             </div>
-                            <form action="{{ route('user.destroy', ['user' => $item->id]) }}"
+                            <form action="{{ route('map.destroy', ['map' => $item->id]) }}"
                               method="POST" class="modal-footer">
                               @csrf
                               @method('delete')

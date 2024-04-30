@@ -20,6 +20,18 @@
         <i class="mdi mdi-home menu-icon"></i>
       </a>
     </li>
+    <li @class(['nav-item', 'active' => $active == 'map'])>
+      <a class="nav-link" href="{{ route('map.index') }}">
+        <span class="menu-title">Maps</span>
+        <i class="mdi mdi-map menu-icon"></i>
+      </a>
+    </li>
+    <li @class(['nav-item', 'active' => $active == 'category'])>
+      <a class="nav-link" href="{{ route('category.index') }}">
+        <span class="menu-title">Category</span>
+        <i class="mdi mdi-layers menu-icon"></i>
+      </a>
+    </li>
     <li @class(['nav-item', 'active' => $active == 'users'])>
       <a class="nav-link" href="{{ route('user.index') }}">
         <span class="menu-title">Users</span>
