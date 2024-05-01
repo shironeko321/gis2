@@ -1,8 +1,8 @@
 @extends('layout.dashboard', ['active' => 'map'])
 
 @push('style')
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  {{-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" /> --}}
 
   <style>
     #map {
@@ -12,7 +12,7 @@
 @endpush
 
 @push('script')
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  {{-- <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <script>
@@ -34,7 +34,7 @@
     }
 
     map.on('click', onMapClick);
-  </script>
+  </script> --}}
 @endpush
 
 @section('content')
@@ -58,19 +58,47 @@
     <div class="alert alert-success">{{ session()->get('msg') }}</div>
   @endif
 
-  <div class="card">
+  <form action="{{ route('category.store') }}" method="POST" class="card">
+    @csrf
     <div class="card-body">
       <h4 class="card-title">Create New Map</h4>
-      <form action="{{ route('category.store') }}" class="forms-sample" method="POST">
-        @csrf
+      <p class="card-description">Map</p>
+      <div class="forms-sample">
         <div id="map"></div>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group">
+              <label for="exampleInputUsername1">Latitude</label>
+              <input type="text" name="latitude" class="form-control" id="exampleInputUsername1" placeholder="Name"
+                value="{{ old('latitude') }}">
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label for="exampleInputUsername1">Longtitude</label>
+              <input type="text" name="longtitude" class="form-control" id="exampleInputUsername1" placeholder="Name"
+                value="{{ old('longtitude') }}">
+            </div>
+          </div>
+        </div>
         <div class="form-group">
           <label for="exampleInputUsername1">Name</label>
-          <input type="text" name="name" class="form-control" id="exampleInputUsername1"
-            placeholder="Name" value="{{ old('name') }}">
+          <input type="text" name="name" class="form-control" id="exampleInputUsername1" placeholder="Name"
+            value="{{ old('name') }}">
         </div>
-        <button type="submit" class="btn btn-gradient-primary me-2">Create</button>
-      </form>
+      </div>
     </div>
-  </div>
+
+    <div class="card-body">
+      <p class="card-description">Images</p>
+      <div class="forms-sample">
+        <div class="form-group">
+          <label for="exampleInputUsername1">Name</label>
+          <input type="file" name="name" class="form-control" id="exampleInputUsername1" placeholder="Name"
+            value="{{ old('name') }}">
+        </div>
+      </div>
+    </div>
+
+  </form>
 @endsection
