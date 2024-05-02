@@ -1,8 +1,9 @@
 @extends('layout.dashboard', ['active' => 'map'])
 
 @push('style')
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  {{-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" /> --}}
+  <link rel="stylesheet" href="{{ asset('assets/vendors/file-upload-with-image-preview/style.css') }}">
 
   <style>
     #map {
@@ -52,13 +53,13 @@
               </div>
               <div class="form-group">
                 <label for="exampleInputUsername1">Longtitude</label>
-                <input type="text" name="longtitude" class="form-control"
-                  id="exampleInputUsername1" placeholder="Longtitude" value="{{ old('longtitude') }}">
+                <input type="text" name="longtitude" class="form-control" id="exampleInputUsername1"
+                  placeholder="Longtitude" value="{{ old('longtitude') }}">
               </div>
               <div class="form-group">
                 <label for="exampleInputUsername1">Name</label>
-                <input type="text" name="name" class="form-control" id="exampleInputUsername1"
-                  placeholder="Name" value="{{ old('name') }}">
+                <input type="text" name="name" class="form-control" id="exampleInputUsername1" placeholder="Name"
+                  value="{{ old('name') }}">
               </div>
             </div>
           </div>
@@ -68,15 +69,7 @@
 
     <div class="card mb-3">
       <div class="card-body">
-        <p class="card-description">Images</p>
-        <div id="img-preview" class="overflow-auto"></div>
-        <div class="forms-sample mt-3">
-          <div class="form-group">
-            <label for="exampleInputUsername1">Image Upload</label>
-            <input type="file" name="image[]" class="form-control" id="image"
-              placeholder="Image Updload" multiple>
-          </div>
-        </div>
+        <div class="custom-file-container" data-upload-id="my-unique-id"></div>
       </div>
     </div>
 
@@ -91,13 +84,13 @@
           </div>
           <div class="form-group mb-3">
             <label for="exampleInputUsername1">Open</label>
-            <input type="time" name="open" class="form-control" id="exampleInputUsername1"
-              placeholder="Open" value="{{ old('open') }}">
+            <input type="time" name="open" class="form-control" id="exampleInputUsername1" placeholder="Open"
+              value="{{ old('open') }}">
           </div>
           <div class="form-group mb-3">
             <label for="exampleInputUsername1">Close</label>
-            <input type="time" name="close" class="form-control" id="exampleInputUsername1"
-              placeholder="Close" value="{{ old('close') }}">
+            <input type="time" name="close" class="form-control" id="exampleInputUsername1" placeholder="Close"
+              value="{{ old('close') }}">
           </div>
 
           <div class="list-group text-bg-secondary p-3">
@@ -106,14 +99,22 @@
               @foreach (['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as $item)
                 <div class="col-12 col-md-3">
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" name="daily[]"
-                      value="{{ $item }}" id="{{ $item }}">
+                    <input class="form-check-input daily" type="checkbox" name="daily[]" value="{{ $item }}"
+                      id="{{ $item }}">
                     <label class="form-check-label" for="{{ $item }}">
                       {{ $item }}
                     </label>
                   </div>
                 </div>
               @endforeach
+              <div class="col-12 col-md-3">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="all-day">
+                  <label class="form-check-label" for="all-day">
+                    All Days
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -126,9 +127,12 @@
 
 
 @push('script')
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  {{-- <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script> --}}
+  <script src="{{ asset('assets/vendors/file-upload-with-image-preview/file-upload-with-preview.iife.js') }}"></script>
 
+
+  {{-- map --}}
   <script>
     var map = L.map('map').setView([51.505, -0.09], 13);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -150,42 +154,34 @@
     map.on('click', onMapClick);
   </script>
 
+  {{-- image preview --}}
   <script>
-    let image = document.getElementById('image')
-    let preview = document.getElementById('img-preview')
+    const upload = new FileUploadWithPreview.FileUploadWithPreview('my-unique-id', {
+      multiple: true,
+      text: {
+        browse: 'Choose',
+        chooseFile: 'Take your pick...',
+        label: 'Image',
+      },
+    })
+    document.getElementById("file-upload-with-preview-my-unique-id").setAttribute('name', 'image[]')
+  </script>
 
-    image.addEventListener('change', (e) => {
-      preview.textContent = "";
+  <script>
+    const allday = document.getElementById('all-day')
+    const daily = document.getElementsByClassName('daily')
 
-      preview.classList.add('d-flex', 'flex-column', 'bg-secondary', 'w-100', 'p-3',
-        'border-rounded', 'gap-3')
-      preview.style = '--bs-bg-opacity: .5;'
-
-      const child = document.createElement('div');
-      child.classList.add('d-inline-flex', 'gap-3')
-
-      const span = document.createElement('span');
-      span.innerText = 'Preview'
-
-      preview.append(span)
-      preview.append(child)
-
-      const length = e.target.files.length
-      for (let index = 0; index < length; index++) {
-        let reader = new FileReader();
-        reader.onload = function() {
-          const div = document.createElement('div');
-          div.classList.add('card')
-
-          const img = document.createElement('img');
-          img.classList.add('card-img-top')
-          img.style = 'height: 150px;width:150px;'
-          img.src = reader.result;
-
-          div.append(img)
-          child.append(div)
-        };
-        reader.readAsDataURL(e.target.files[index]);
+    allday.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        for (let index = 0; index < daily.length; index++) {
+          const element = daily[index];
+          element.checked = true
+        }
+      } else {
+        for (let index = 0; index < daily.length; index++) {
+          const element = daily[index];
+          element.checked = false
+        }
       }
     })
   </script>
