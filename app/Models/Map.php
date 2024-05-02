@@ -15,7 +15,7 @@ class Map extends Model
     protected $fillable = [
         'name',
         'latitude',
-        'longtitude',
+        'longitude',
         'category_id'
     ];
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreMapRequest;
+use App\Models\Category;
 use App\Models\Map;
 use Illuminate\Http\Request;
 
@@ -20,20 +22,48 @@ class MapController extends Controller
      */
     public function create()
     {
-        return view('dashboard.map.create');
+        return view('dashboard.map.create', ['category' => Category::all()]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreMapRequest $request)
     {
-        $data = $request->validate([
-            'name' => 'required',
+        $data = $request->validated();
+
+        // store map
+        $map = Map::create([
+            "latitude" => $data["latitude"],
+            "longitude" => $data["longitude"],
+            "name" => $data["name"],
+            "category_id" => $data["category"]
         ]);
 
-        Map::create($data);
-        return back()->with('msg', 'Success Create New Category');
+        // convert array to str
+        $data["daily"] = implode(',', $data["daily"]);
+
+        // store detail about map
+        $map->detail()->create([
+            "description" => $data["description"],
+            "open" => $data["open"],
+            "close" => $data["close"],
+            "daily" => $data["daily"],
+        ]);
+
+        // store image
+        $filename = [];
+        $images = $request->file('image');
+        foreach ($images as $image) {
+            // get file name
+            $path = $image->store("public/images");
+            $path = str_replace("public/images/", "", $path);
+            array_push($filename, ["name" => $path]);
+        }
+
+        $map->image()->createMany($filename);
+
+        return back()->with('msg', 'Success Create New Map');
     }
 
     /**

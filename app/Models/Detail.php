@@ -18,6 +18,14 @@ class Detail extends Model
         'map_id',
     ];
 
+    public function casts()
+    {
+        return [
+            'open' => 'timestamp',
+            'close' => 'timestamp',
+        ];
+    }
+
     public function map(): BelongsTo
     {
         return $this->belongsTo(Map::class);

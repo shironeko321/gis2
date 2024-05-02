@@ -30,7 +30,7 @@
                   <th> * </th>
                   <th> name </th>
                   <th> latitude </th>
-                  <th> longtitude </th>
+                  <th> longitude </th>
                   <th> Action </th>
                 </tr>
               </thead>
@@ -42,7 +42,7 @@
                     </th>
                     <td> {{ $item->name }} </td>
                     <td> {{ $item->latitude }} </td>
-                    <td> {{ $item->longtitude }} </td>
+                    <td> {{ $item->longitude }} </td>
                     <td>
                       <div class="btn-group">
                         <a href="{{ route('map.edit', ['map' => $item->id]) }}"
