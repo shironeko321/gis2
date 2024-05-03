@@ -45,8 +45,8 @@
                     <td> {{ $item->longitude }} </td>
                     <td>
                       <div class="btn-group">
-                        <a href="{{ route('map.edit', ['map' => $item->id]) }}"
-                          class="btn btn-primary">
+                        <a href="{{ route('map.show', ['map' => $item->id]) }}"
+                          class="btn btn-success">
                           <i class="mdi mdi-alpha-i"></i>
                           Show
                         </a>

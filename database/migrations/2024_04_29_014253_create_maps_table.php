@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->float('latitude');
             $table->float('longitude');
-            $table->foreignId('category_id')->constrained();
+            $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

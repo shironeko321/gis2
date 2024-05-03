@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMapRequest;
 use App\Models\Category;
+use App\Models\Image;
 use App\Models\Map;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MapController extends Controller
 {
@@ -71,7 +73,10 @@ class MapController extends Controller
      */
     public function show(Map $map)
     {
-        //
+        return view('dashboard.map.show', [
+            'item' => $map->with(['detail', 'image'])->first(),
+            'category' => Category::all()
+        ]);
     }
 
     /**
@@ -79,22 +84,53 @@ class MapController extends Controller
      */
     public function edit(Map $map)
     {
-        return view('dashboard.category.edit', ['item' => $map]);
+        return view('dashboard.map.edit', [
+            'item' => $map->with(['detail', 'image'])->first(),
+            'category' => Category::all()
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Map $map)
+    public function update(StoreMapRequest $request, Map $map)
     {
-        $data = $request->validate([
-            'name' => 'required',
+        // dd($request->all());
+        $data = $request->validated();
+
+        // store map
+        $map->update([
+            "latitude" => $data["latitude"],
+            "longitude" => $data["longitude"],
+            "name" => $data["name"],
+            "category_id" => $data["category"]
         ]);
 
-        $name = $data['name'];
+        // convert array to str
+        $data["daily"] = implode(',', $data["daily"]);
 
-        $map->update($data);
-        return redirect()->route('category.index')->with('msg', "Success Update Category($name)");
+        // store detail about map
+        $map->detail()->update([
+            "description" => $data["description"],
+            "open" => $data["open"],
+            "close" => $data["close"],
+            "daily" => $data["daily"],
+        ]);
+
+        // store image
+        $filename = [];
+        $images = $request->file('image');
+        foreach ($images as $image) {
+            // get file name
+            $path = $image->store("public/images");
+            $path = str_replace("public/images/", "", $path);
+            array_push($filename, ["name" => $path]);
+        }
+
+        $map->image()->createMany($filename);
+
+        $name = $data['name'];
+        return redirect()->route('map.index')->with('msg', "Success Update Map($name)");
     }
 
     /**
@@ -104,6 +140,14 @@ class MapController extends Controller
     {
         $map->delete();
 
-        return redirect()->route('category.index')->with('msg', 'Success Create Delete Category');
+        return redirect()->route('map.index')->with('msg', 'Success Delete Map');
+    }
+
+    public function deleteImage(Image $id)
+    {
+        Storage::delete("public/images/$id->name");
+        $id->delete();
+
+        return back();
     }
 }

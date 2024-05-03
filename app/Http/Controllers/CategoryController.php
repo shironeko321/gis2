@@ -29,6 +29,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
+            'color' => 'required',
             'name' => 'required',
         ]);
 
@@ -58,6 +59,7 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $data = $request->validate([
+            'color' => 'required',
             'name' => 'required',
         ]);
 
@@ -72,8 +74,9 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+        $name = $category->name;
         $category->delete();
 
-        return redirect()->route('category.index')->with('msg', 'Success Create Delete Category');
+        return redirect()->route('category.index')->with('msg', "Success Delete Category($name)");
     }
 }

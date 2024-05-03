@@ -29,6 +29,7 @@
                 <tr>
                   <th> * </th>
                   <th> Name </th>
+                  <th> Color </th>
                   <th> Action </th>
                 </tr>
               </thead>
@@ -39,6 +40,10 @@
                       {{ $loop->iteration }}
                     </th>
                     <td> {{ $item->name }} </td>
+                    <td>
+                      <div style="background-color: {{ $item->color }}; width: 30px; height: 30px">
+                      </div>
+                    </td>
                     <td>
                       <div class="btn-group">
                         <a href="{{ route('category.edit', ['category' => $item->id]) }}"

@@ -22,7 +22,9 @@ Route::prefix('dashboard')->group(function () {
 
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         Route::resource('category', CategoryController::class);
-        Route::resource('map', MapController::class);
         Route::resource('user', UserController::class);
+        Route::resource('map', MapController::class);
+
+        Route::delete('/map/image/{id}', [MapController::class, 'deleteImage'])->name('map.deleteImage');
     });
 });

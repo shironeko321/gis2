@@ -27,9 +27,14 @@
       <form action="{{ route('category.store') }}" class="forms-sample" method="POST">
         @csrf
         <div class="form-group">
-          <label for="exampleInputUsername1">Name</label>
-          <input type="text" name="name" class="form-control" id="exampleInputUsername1"
-            placeholder="Name" value="{{ old('name') }}">
+          <label for="color">Color</label>
+          <input type="color" name="color" class="form-control form-control-color" id="color"
+            placeholder="Color" value="{{ old('color') }}">
+        </div>
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" name="name" class="form-control" id="name" placeholder="Name"
+            value="{{ old('name') }}">
         </div>
         <button type="submit" class="btn btn-gradient-primary me-2">Create</button>
       </form>

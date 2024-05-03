@@ -25,6 +25,11 @@
         @csrf
         @method('put')
         <div class="form-group">
+          <label for="color">Color</label>
+          <input type="color" name="color" class="form-control form-control-color" id="color"
+            placeholder="Color" value="{{ $item->color }}">
+        </div>
+        <div class="form-group">
           <label for="exampleInputUsername1">Name</label>
           <input type="text" name="name" class="form-control" id="exampleInputUsername1"
             placeholder="Name" value="{{ $item->name }}">

@@ -147,7 +147,7 @@
 
   {{-- map --}}
   <script>
-    var map = L.map('map').setView([51.505, -0.09], 13);
+    var map = L.map('map').setView([-2.8994298, 107.9140491], 10);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -169,6 +169,10 @@
       longitude = e.target.value
     })
 
+    let icon = L.divIcon({
+      className: "mdi mdi-map-marker",
+      style: "color: blue"
+    })
     let marker = L.marker([latitude, longitude]).addTo(map);
 
     checkCoordinate.addEventListener('click', () => {
