@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\Time;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,8 +22,8 @@ class Detail extends Model
     public function casts()
     {
         return [
-            'open' => 'timestamp',
-            'close' => 'timestamp',
+            'open' => Time::class,
+            'close' => Time::class,
         ];
     }
 

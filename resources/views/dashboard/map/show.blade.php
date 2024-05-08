@@ -72,12 +72,12 @@
                         <div class="col">
                           <label>Open</label>
                           <input type="time" class="form-control" disabled
-                            value="{{ date('H:i', $item->detail->open) }}">
+                            value="{{ $item->detail->open }}">
                         </div>
                         <div class="col">
                           <label>Close</label>
                           <input type="time" class="form-control" disabled
-                            value="{{ date('H:i', $item->detail->close) }}">
+                            value="{{ $item->detail->close }}">
                         </div>
                       </div>
                     </div>
@@ -91,7 +91,7 @@
     </div>
   </div>
 
-  <a href="{{ route('map.show', ['map' => $item->id]) }}" class="btn btn-primary">Update</a>
+  <a href="{{ route('map.edit', ['map' => $item->id]) }}" class="btn btn-primary">Update</a>
   </form>
 @endsection
 

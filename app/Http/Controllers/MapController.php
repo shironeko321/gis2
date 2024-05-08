@@ -47,23 +47,25 @@ class MapController extends Controller
 
         // store detail about map
         $map->detail()->create([
-            "description" => $data["description"],
-            "open" => $data["open"],
-            "close" => $data["close"],
-            "daily" => $data["daily"],
+            "description" => $data["description"] ?? "",
+            "open" => $data["open"] ?? "",
+            "close" => $data["close"] ?? "",
+            "daily" => $data["daily"] ?? "",
         ]);
 
-        // store image
-        $filename = [];
-        $images = $request->file('image');
-        foreach ($images as $image) {
-            // get file name
-            $path = $image->store("public/images");
-            $path = str_replace("public/images/", "", $path);
-            array_push($filename, ["name" => $path]);
-        }
+        if (isset($data['image'])) {
+            // store image
+            $filename = [];
+            $images = $request->file('image');
+            foreach ($images as $image) {
+                // get file name
+                $path = $image->store("public/images");
+                $path = str_replace("public/images/", "", $path);
+                array_push($filename, ["name" => $path]);
+            }
 
-        $map->image()->createMany($filename);
+            $map->image()->createMany($filename);
+        }
 
         return back()->with('msg', 'Success Create New Map');
     }
@@ -117,17 +119,20 @@ class MapController extends Controller
             "daily" => $data["daily"],
         ]);
 
-        // store image
-        $filename = [];
-        $images = $request->file('image');
-        foreach ($images as $image) {
-            // get file name
-            $path = $image->store("public/images");
-            $path = str_replace("public/images/", "", $path);
-            array_push($filename, ["name" => $path]);
-        }
+        if (isset($data['image'])) {
+            # code...
+            // store image
+            $filename = [];
+            $images = $request->file('image');
+            foreach ($images as $image) {
+                // get file name
+                $path = $image->store("public/images");
+                $path = str_replace("public/images/", "", $path);
+                array_push($filename, ["name" => $path]);
+            }
 
-        $map->image()->createMany($filename);
+            $map->image()->createMany($filename);
+        }
 
         $name = $data['name'];
         return redirect()->route('map.index')->with('msg', "Success Update Map($name)");

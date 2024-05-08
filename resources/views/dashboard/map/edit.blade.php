@@ -118,12 +118,12 @@
           <div class="form-group mb-3">
             <label for="open">Open</label>
             <input type="time" name="open" class="form-control" id="open"
-              placeholder="Open" value="{{ date('H:i', $item->detail->open) }}">
+              placeholder="Open" value="{{ $item->detail->open }}">
           </div>
           <div class="form-group mb-3">
             <label for="close">Close</label>
             <input type="time" name="close" class="form-control" id="close"
-              placeholder="Close" value="{{ date('H:i', $item->detail->close) }}">
+              placeholder="Close" value="{{ $item->detail->close }}">
           </div>
 
           <div class="list-group p-3">

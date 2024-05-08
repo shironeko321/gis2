@@ -5,10 +5,12 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\UserController;
+use App\Models\Map;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', function (Request $request) {
+    return view('welcome', ['markers' => Map::with(['image', 'detail'])->get()]);
 });
 
 
