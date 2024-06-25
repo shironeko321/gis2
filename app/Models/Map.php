@@ -22,12 +22,17 @@ class Map extends Model
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Detail::class);
+        return $this->belongsTo(Category::class);
     }
 
     public function detail(): HasOne
     {
         return $this->hasOne(Detail::class);
+    }
+
+    public function operationaltime(): HasMany
+    {
+        return $this->hasMany(OperationalTime::class);
     }
 
     public function image(): HasMany

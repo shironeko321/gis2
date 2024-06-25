@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('details', function (Blueprint $table) {
+        Schema::create('operational_times', function (Blueprint $table) {
             $table->id();
-            $table->text('description')->nullable();
-            $table->text('address')->nullable();
-            $table->text('website')->nullable();
+            $table->string('day');
+            $table->time('open');
+            $table->time('close');
             $table->foreignId('map_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('details');
+        Schema::dropIfExists('operational_times');
     }
 };

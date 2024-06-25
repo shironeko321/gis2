@@ -26,10 +26,16 @@ class StoreMapRequest extends FormRequest
             "longitude" => "required|numeric",
             "name" => "required",
             "description" => "string",
+            "address" => "string",
+            "website" => "string|nullable",
             "category" => "required|exists:categories,id",
-            "open" => "string",
-            "close" => "string",
-            "daily" => "array",
+            "open" => "array|required",
+            "open.*" => "string",
+            "close" => "array|required",
+            "close.*" => "string",
+            "daily" => "array|required",
+            "daily.*" => "string",
+            "image" => "array",
             "image.*" => "image"
         ];
     }

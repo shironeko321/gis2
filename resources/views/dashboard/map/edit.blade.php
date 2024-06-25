@@ -1,4 +1,4 @@
-@extends('layout.dashboard', ['active' => 'map'])
+@extends('layout.dashboard')
 
 @push('style')
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -11,6 +11,8 @@
     }
   </style>
 @endpush
+
+{{-- @dd($item) --}}
 
 @section('content')
   <div class="page-header">
@@ -57,7 +59,7 @@
               <div class="form-group">
                 <label for="longitude">Longitude</label>
                 <input type="number" name="longitude" class="form-control" id="longitude"
-                  placeholder="Longitude" value="{{ $item->latitude }}" step="any">
+                  placeholder="Longitude" value="{{ $item->longitude }}" step="any">
               </div>
               <div class="form-group">
                 <label for="name">Name</label>
@@ -104,54 +106,85 @@
               style="height: 100px">{{ $item->detail->description }}</textarea>
             <label for="floatingTextarea2">Description</label>
           </div>
-          <div class="form-group mb-3">
-            <label for="exampleInputUsername1">Category</label>
-            <select class="form-select" name="category" aria-label="Default select example">
-              <option selected disabled>Open this select category</option>
-              @foreach ($category as $cat)
-                <option value="{{ $cat->id }}" @selected($item->category_id == $cat->id)>
-                  {{ $cat->name }}
-                </option>
-              @endforeach
-            </select>
-          </div>
-          <div class="form-group mb-3">
-            <label for="open">Open</label>
-            <input type="time" name="open" class="form-control" id="open"
-              placeholder="Open" value="{{ $item->detail->open }}">
-          </div>
-          <div class="form-group mb-3">
-            <label for="close">Close</label>
-            <input type="time" name="close" class="form-control" id="close"
-              placeholder="Close" value="{{ $item->detail->close }}">
-          </div>
-
-          <div class="list-group p-3">
-            <label for="operational-day">Operational Days</label>
-            <div class="row row-cols-4">
-              @foreach (['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as $day)
-                <div class="col-12 col-md-3">
-                  <div class="form-check form-check-inline">
-                    <label class="form-check-label" for="{{ $day }}">
-                      <input class="form-check-input daily" type="checkbox" name="daily[]"
-                        value="{{ $day }}" id="{{ $day }}"
-                        @checked(str_contains($item->detail->daily, $day))>
-                      {{ $day }}
-                    </label>
-                  </div>
-                </div>
-              @endforeach
-              <div class="col-12 col-md-3">
-                <div class="form-check form-switch">
-                  <label class="form-check-label" for="all-day">
-                    <input class="form-check-input" type="checkbox" id="all-day">
-                    All Days
-                  </label>
-                </div>
-              </div>
+          <div class="row">
+            <div class="col-10 form-group mb-3">
+              <label for="exampleInputUsername1">Category</label>
+              <select class="form-select" name="category" aria-label="Default select example">
+                <option selected disabled>Open this select category</option>
+                @foreach ($category as $cat)
+                  <option value="{{ $cat->id }}" @selected($item->category_id == $cat->id)>
+                    {{ $cat->name }}
+                  </option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-2 d-flex align-items-center justify-content-end">
+              <a href="{{ route('category.create') }}" class="btn btn-primary">Create</a>
             </div>
           </div>
+          <div class="form-group">
+            <label for="address">Address</label>
+            <input type="text" name="address" class="form-control" id="address"
+              placeholder="address" value="{{ $item->detail->address }}">
+          </div>
+          <div class="form-group">
+            <label for="website">website</label>
+            <input type="text" name="website" class="form-control" id="website"
+              placeholder="website" value="{{ $item->detail->website }}">
+          </div>
         </div>
+      </div>
+    </div>
+
+    {{-- operational time --}}
+    <div class="card mb-3">
+      <div class="card-body">
+        <p class="card-description">Daily Operational</p>
+        <table class="table">
+          <thead class="table-primary">
+            <th>Daily</th>
+            <th>Open</th>
+            <th>Close</th>
+          </thead>
+          <tbody>
+            `@php
+              use Illuminate\Support\Arr;
+              $dayactive = Arr::pluck($item->operationaltime, 'day');
+              $openactive = Arr::pluck($item->operationaltime, 'open');
+              $closeactive = Arr::pluck($item->operationaltime, 'close');
+            @endphp
+
+            @foreach (['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as $day)
+              @php
+                $checked = in_array($day, $dayactive);
+                $open = $openactive[array_search($day, $dayactive)] ?? '';
+                $close = $closeactive[array_search($day, $dayactive)] ?? '';
+              @endphp
+              <tr>
+                <td>
+                  <div class="form-check form-switch ms-5">
+                    <input class="form-check-input -ms-1 daily" type="checkbox"
+                      name="daily[{{ $day }}]" value="{{ $day }}"
+                      id="{{ $day }}" @checked($checked)>
+                    <label class="form-check-label ms-3" for="{{ $day }}">
+                      {{ ucfirst(trans($day)) }}
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <input type="time" name="open[{{ $day }}]" class="form-control open"
+                    disabled id="open" placeholder="Open"
+                    value="{{ $checked ? $open : '' }}">
+                </td>
+                <td>
+                  <input type="time" name="close[{{ $day }}]"
+                    class="form-control close" disabled id="close" placeholder="Close"
+                    value="{{ $checked ? $close : '' }}">
+                </td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -273,21 +306,26 @@
 
   {{-- daily check box --}}
   <script>
-    const allday = document.getElementById('all-day')
-    const daily = document.getElementsByClassName('daily')
+    const daily = document.querySelectorAll('.daily')
 
-    allday.addEventListener('change', (e) => {
-      if (e.target.checked) {
-        for (let index = 0; index < daily.length; index++) {
-          const element = daily[index];
-          element.checked = true
-        }
-      } else {
-        for (let index = 0; index < daily.length; index++) {
-          const element = daily[index];
-          element.checked = false
-        }
+    daily.forEach((element, i) => {
+      const open = document.querySelectorAll('.open')[i]
+      const close = document.querySelectorAll('.close')[i]
+
+      if (element.checked) {
+        open.disabled = false
+        close.disabled = false
       }
-    })
+
+      element.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          open.disabled = false
+          close.disabled = false
+        } else {
+          open.disabled = true
+          close.disabled = true
+        }
+      })
+    });
   </script>
 @endpush

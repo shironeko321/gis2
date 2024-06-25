@@ -6,7 +6,6 @@ use App\Http\Requests\StoreMapRequest;
 use App\Models\Category;
 use App\Models\Image;
 use App\Models\Map;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class MapController extends Controller
@@ -29,9 +28,11 @@ class MapController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     */
+    //  */
+    // public function store(Request $request)
     public function store(StoreMapRequest $request)
     {
+        // dd($request->all());
         $data = $request->validated();
 
         // store map
@@ -42,17 +43,31 @@ class MapController extends Controller
             "category_id" => $data["category"]
         ]);
 
-        // convert array to str
-        $data["daily"] = implode(',', $data["daily"]);
-
-        // store detail about map
+        // // store detail about map
         $map->detail()->create([
             "description" => $data["description"] ?? "",
-            "open" => $data["open"] ?? "",
-            "close" => $data["close"] ?? "",
-            "daily" => $data["daily"] ?? "",
+            "address" => $data["address"] ?? "",
+            "website" => $data["website"] ?? "",
         ]);
 
+        // operational time
+        $operatiional = array();
+
+        foreach ($data['daily'] as $key => $value) {
+            if (!isset($data['open'][$key], $data['close'][$key])) {
+                continue;
+            }
+
+            $operatiionalTime['day'] = $value;
+            $operatiionalTime['open'] = $data['open'][$key];
+            $operatiionalTime['close'] = $data['close'][$key];
+
+            array_push($operatiional, $operatiionalTime);
+        }
+        $map->operationaltime()->createMany($operatiional);
+
+
+        // image
         if (isset($data['image'])) {
             // store image
             $filename = [];
@@ -86,8 +101,9 @@ class MapController extends Controller
      */
     public function edit(Map $map)
     {
+        // dd($map->with('detail', 'image', 'operationaltime')->where('id', $map->id)->first());
         return view('dashboard.map.edit', [
-            'item' => $map->with(['detail', 'image'])->first(),
+            'item' => $map->with('detail', 'image', 'operationaltime')->where('id', $map->id)->first(),
             'category' => Category::all()
         ]);
     }
@@ -109,16 +125,32 @@ class MapController extends Controller
         ]);
 
         // convert array to str
-        $data["daily"] = implode(',', $data["daily"]);
 
         // store detail about map
         $map->detail()->update([
-            "description" => $data["description"],
-            "open" => $data["open"],
-            "close" => $data["close"],
-            "daily" => $data["daily"],
+            "description" => $data["description"] ?? "",
+            "address" => $data["address"] ?? "",
+            "website" => $data["website"] ?? "",
         ]);
 
+        // operational
+        $map->operationaltime()->delete();
+        $operatiional = array();
+
+        foreach ($data['daily'] as $key => $value) {
+            if (!isset($data['open'][$key], $data['close'][$key])) {
+                continue;
+            }
+
+            $operatiionalTime['day'] = $value;
+            $operatiionalTime['open'] = $data['open'][$key];
+            $operatiionalTime['close'] = $data['close'][$key];
+
+            array_push($operatiional, $operatiionalTime);
+        }
+        $map->operationaltime()->createMany($operatiional);
+
+        // image
         if (isset($data['image'])) {
             # code...
             // store image

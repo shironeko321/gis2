@@ -2,20 +2,29 @@
 
 namespace App\Models;
 
+use App\Casts\Time;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Detail extends Model
+class OperationalTime extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'description',
-        'address',
-        'website',
+        'day',
+        'open',
+        'close',
         'map_id',
     ];
+
+    public function casts()
+    {
+        return [
+            'open' => Time::class,
+            'close' => Time::class,
+        ];
+    }
 
     public function map(): BelongsTo
     {

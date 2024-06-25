@@ -1,4 +1,4 @@
-@extends('layout.dashboard', ['active' => 'users'])
+@extends('layout.dashboard')
 
 @section('content')
   <div class="page-header">
